@@ -1,5 +1,6 @@
 #:kivy 1.11.0
 #:import C kivy.utils.get_color_from_hex
+#:import HoverButton main.HoverButton
 
 
 <BoxLayout>:
@@ -107,9 +108,11 @@
 
                 on_text_validate: root.do_login(username.text, password.text)
 
-            Button:
+            HoverButton:
+                id: login
                 text: 'login'
                 on_press: root.do_login(username.text, password.text)
+                color: [1, 1, 1, 1]
 
                 halign: 'center'
                 valign: 'center'
@@ -158,7 +161,7 @@
                 background_normal: 'assets/input_line.png'
                 background_active: 'assets/input_line.png'
 
-            Button:
+            HoverButton:
                 text: 'connect'
                 on_press: root.connect_to_agent(agent_name_input.text)
 
@@ -171,7 +174,7 @@
                 color: 0, 0, 0, 1
                 halign: 'left'
 
-            Button:
+            HoverButton:
                 text: 'refresh'
                 background_normal: 'assets/light_grey.png'
                 on_press: root.on_enter()
@@ -193,6 +196,6 @@
         BoxLayout:
             size_hint_y: 1/8
             orientation: 'horizontal'
-            Button:
+            HoverButton:
                 text: "logout"
                 on_press: root.do_logout()

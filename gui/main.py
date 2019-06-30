@@ -6,10 +6,13 @@ Config.set('graphics', 'height', '800')
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.clock import mainthread
-from kivy.properties import StringProperty, DictProperty
+from kivy.factory import Factory
+from kivy.core.window import Window
+from kivy.properties import StringProperty, DictProperty, BooleanProperty, ObjectProperty
 from kivy.uix.screenmanager import ScreenManager, SlideTransition, Screen
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from kivy.uix.widget import Widget
 
 import threading
 from services.discovery import SimpleDiscService
@@ -17,11 +20,43 @@ from services.discovery import SimpleDiscService
 
 # MARK: TODOs
 # TODO: Implement a way to dynamically load a scrolling view of the BBBs (Kivy Recycleview?)
-# TODO: Implement popup menu to notify reader that page is loading
 # TODO: Implement the service to connect to the agent via ssh -- fix screen as well
-# TODO: Context menu on right click??
-# TODO: Implement mouse hover behavior
-# TODO: Fix the file location change
+
+
+# MARK: Extra Functionality
+class MouseOver(Widget):
+    def __init__(self, **kwargs):
+        Window.bind(mouse_pos=self._mouse_move)
+        self.hovering = BooleanProperty(False)
+        self.poi = ObjectProperty(None)
+        self.register_event_type('on_hover')
+        self.register_event_type('on_exit')
+        super(MouseOver, self).__init__(**kwargs)
+
+    def _mouse_move(self, *args):
+        if not self.get_root_window():
+            return
+        is_collide = self.collide_point(*self.to_widget(*args[1]))
+        if self.hovering == is_collide:
+            return
+        self.poi = args[1]
+        self.hovering = is_collide
+        self.dispatch('on_hover' if is_collide else 'on_exit')
+
+    def on_hover(self):
+        pass
+
+    def on_exit(self):
+        pass
+
+
+class HoverButton(Button, MouseOver):
+    def on_hover(self):
+        self.opacity = 0.85
+
+    def on_exit(self):
+        self.opacity = 1.0
+
 
 # MARK: Screens
 class ConnectedScreen(Screen):
@@ -62,7 +97,7 @@ class ConnectedScreen(Screen):
 
             agent_status = status[boolean]
             self.registered_agent_labels[agent_name] = Label(text=f'{agent_name}: {agent_status}', color=[0, 0, 0, 1], size_hint=(1, 1/num_agents))
-            self.registered_agent_buttons[agent_name] = Button(text='connect',
+            self.registered_agent_buttons[agent_name] = HoverButton(text='connect',
                                                                background_normal='assets/green.png' if boolean else 'assets/red.png',
                                                                size_hint=(1, 1/num_agents),
                                                                on_press=lambda _: self.connect_to_agent(agent_name))
@@ -154,4 +189,5 @@ class ProjectAuxoApp(App):
 
 
 if __name__ == '__main__':
+    Factory.register('MouseOver', MouseOver)
     ProjectAuxoApp().run()
