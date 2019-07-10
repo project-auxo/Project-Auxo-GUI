@@ -14,13 +14,22 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 
+import requests
+import endpoints as ep
 import threading
+from functools import partial
 from services.discovery import SimpleDiscService
 
 
 # MARK: TODOs
 # TODO: Implement a way to dynamically load a scrolling view of the BBBs (Kivy Recycleview?)
 # TODO: Implement the service to connect to the agent via ssh -- fix screen as well
+# TODO: Implement the agent screen -- and connect to agent
+
+
+# MARK: Globals
+led_value = 0
+selected_agent = None
 
 
 # MARK: Extra Functionality
@@ -52,7 +61,7 @@ class MouseOver(Widget):
 
 class HoverButton(Button, MouseOver):
     def on_hover(self):
-        self.opacity = 0.85
+        self.opacity = 0.92
 
     def on_exit(self):
         self.opacity = 1.0
@@ -100,7 +109,7 @@ class ConnectedScreen(Screen):
             self.registered_agent_buttons[agent_name] = HoverButton(text='connect',
                                                                background_normal='assets/green.png' if boolean else 'assets/red.png',
                                                                size_hint=(1, 1/num_agents),
-                                                               on_press=lambda _: self.connect_to_agent(agent_name))
+                                                               on_press=partial(self.connect_to_agent, agent_name))
 
             self.ids['bbb_grid_label'].add_widget(self.registered_agent_labels[agent_name])
             self.ids['bbb_grid_connect_button'].add_widget(self.registered_agent_buttons[agent_name])
@@ -112,8 +121,12 @@ class ConnectedScreen(Screen):
         self.reset()
         self.stop.set()
 
-    def connect_to_agent(self, agent_name: str):
-        # Attempting to connect
+    def connect_to_agent(self, *args):
+        # Perform transition -- connect at destination
+        selected_agent_name: str = args[0].strip()      # remove the leading and trailing spaces
+        agent_screen = self.manager.get_screen('agent_screen')
+        setattr(agent_screen, 'selected_agent_name', selected_agent_name)
+
         self.manager.transition = SlideTransition(direction='down')
         self.manager.current = 'agent_screen'
         self.reset()
@@ -130,8 +143,22 @@ class ConnectedScreen(Screen):
         self.registered_agents.clear()
 
 
-class AgentScreen(Screen):   # show the agent's vitals
-    pass
+class AgentScreen(Screen):   # show the agent's vitals -- along with some minimal control
+
+    def go_back(self):
+        self.manager.transition = SlideTransition(direction='down')
+        self.manager.current = 'connected_screen'
+
+    def toggle_led(self):
+        global led_value
+        led_value = int(not led_value)
+
+        # interface with the rest endpoints
+        url = ep.led_endpoint(self.selected_agent_name)
+        try:
+            _ = requests.post(url=url, data={'status': led_value})
+        except Exception as e:
+            print(f"Are you sure the service is running on the BBB?: {e}")
 
 
 class LoginScreen(Screen):

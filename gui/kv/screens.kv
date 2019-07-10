@@ -44,7 +44,7 @@
 
 
 # MARK: Screens start below
-# TODO: Make an agent screen
+
 <LoginScreen>:
     BoxLayout:
         orientation: 'vertical'
@@ -199,3 +199,25 @@
             HoverButton:
                 text: "logout"
                 on_press: root.do_logout()
+
+
+<AgentScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # Row 1
+        BoxLayout:
+            orientation: 'horizontal'
+            Label:
+                text: 'toggle LED'
+                color: 0, 0, 0, 1
+
+            HoverButton:
+                text: 'on/off'
+                background_normal: 'assets/green.png'
+                on_press: root.toggle_led()
+
+            HoverButton:
+                text: 'back'
+                background_normal: 'assets/red.png'
+                on_press: root.go_back()
