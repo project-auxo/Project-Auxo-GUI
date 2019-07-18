@@ -23,8 +23,7 @@ from services.discovery import SimpleDiscService
 
 # MARK: TODOs
 # TODO: Implement a way to dynamically load a scrolling view of the BBBs (Kivy Recycleview?)
-# TODO: Implement the service to connect to the agent via ssh -- fix screen as well
-# TODO: Implement the agent screen -- and connect to agent
+# TODO: Implement the service to connect to the agent via ssh (naw, do so via the REST endpoints) -- fix screen as well
 
 
 # MARK: Globals
@@ -109,7 +108,7 @@ class ConnectedScreen(Screen):
             self.registered_agent_buttons[agent_name] = HoverButton(text='connect',
                                                                background_normal='assets/green.png' if boolean else 'assets/red.png',
                                                                size_hint=(1, 1/num_agents),
-                                                               on_press=partial(self.connect_to_agent, agent_name))
+                                                               on_press=partial(self.connect_to_agent, agent_name, boolean))
 
             self.ids['bbb_grid_label'].add_widget(self.registered_agent_labels[agent_name])
             self.ids['bbb_grid_connect_button'].add_widget(self.registered_agent_buttons[agent_name])
@@ -124,12 +123,15 @@ class ConnectedScreen(Screen):
     def connect_to_agent(self, *args):
         # Perform transition -- connect at destination
         selected_agent_name: str = args[0].strip()      # remove the leading and trailing spaces
-        agent_screen = self.manager.get_screen('agent_screen')
-        setattr(agent_screen, 'selected_agent_name', selected_agent_name)
+        agent_online: bool = args[1]
 
-        self.manager.transition = SlideTransition(direction='down')
-        self.manager.current = 'agent_screen'
-        self.reset()
+        if agent_online:
+            agent_screen = self.manager.get_screen('agent_screen')
+            setattr(agent_screen, 'selected_agent_name', selected_agent_name)
+
+            self.manager.transition = SlideTransition(direction='down')
+            self.manager.current = 'agent_screen'
+            self.reset()
 
     def reset(self):
         self.ids['loading_circle'].source = 'assets/loading_circle.gif'
@@ -197,7 +199,7 @@ Builder.load_file('kv/screens.kv')
 
 class ProjectAuxoApp(App):
     icon = 'assets/Auxo_Logo_Black.png'
-    title = 'Project Auxo Agent Manager'
+    title = 'Project Auxo Platform'
 
     username = StringProperty("")
     password = StringProperty("")
