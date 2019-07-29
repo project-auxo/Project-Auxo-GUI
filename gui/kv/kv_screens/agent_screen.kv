@@ -1,0 +1,25 @@
+#:kivy 1.11.0
+#:import C kivy.utils.get_color_from_hex
+#:import HoverButton kvhelpers.HoverButton
+
+
+<AgentScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        # Row 1
+        BoxLayout:
+            orientation: 'horizontal'
+            Label:
+                text: 'toggle LED'
+                color: 0, 0, 0, 1
+
+            HoverButton:
+                text: 'on/off'
+                background_normal: 'assets/green.png'
+                on_press: root.toggle_led()
+
+            HoverButton:
+                text: 'back'
+                background_normal: 'assets/red.png'
+                on_press: root.go_back()

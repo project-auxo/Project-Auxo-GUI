@@ -1,0 +1,85 @@
+#:kivy 1.11.0
+#:import C kivy.utils.get_color_from_hex
+#:import HoverButton kvhelpers.HoverButton
+
+
+<ConnectedScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+
+        canvas.before:
+            Color:
+                rgba: 1, 1, 1, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Row 1
+        BoxLayout:
+            size_hint_y: 1/8
+            orientation: 'horizontal'
+            Label:
+                text: '[b]signed in as[/b]: ' + app.username
+                color: 0, 0, 0, 1
+                bold: True
+                markup: True
+
+            Image:
+                id: loading_circle
+                source: 'assets/loading_circle.gif'
+                anim_delay: 1/20
+
+
+
+        # Row 2
+        BoxLayout:
+            size_hint_y: 1/8
+            orientation: 'horizontal'
+
+            TextInput:
+                id: broker_addr_input
+                hint_text: "ip:port"
+                halign: 'center'
+
+                background_normal: 'assets/input_line.png'
+                background_active: 'assets/input_line.png'
+
+            HoverButton:
+                text: 'launch'
+                on_press: root.launch_broker(broker_addr_input.text)
+
+        # Row 3
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 1/8
+            Label:
+                text: "agents' status"
+                color: 0, 0, 0, 1
+                halign: 'left'
+
+            HoverButton:
+                text: 'refresh'
+                background_normal: 'assets/light_grey.png'
+                on_press: root.on_enter()
+
+        # Row 4
+        BoxLayout:
+            size_hint_y: 1/2
+            orientation: 'horizontal'
+
+            BoxLayout:
+                orientation: 'vertical'
+                id: bbb_grid_label
+
+            BoxLayout:
+                orientation: 'vertical'
+                id: bbb_grid_connect_button
+
+        # Row 5
+        BoxLayout:
+            size_hint_y: 1/8
+            orientation: 'horizontal'
+            HoverButton:
+                text: "logout"
+                on_press: root.do_logout()
+
