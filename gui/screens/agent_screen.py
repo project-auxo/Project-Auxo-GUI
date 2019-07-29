@@ -1,3 +1,7 @@
+"""
+Screen when connected to a given agent
+"""
+
 from kivy.uix.screenmanager import SlideTransition, Screen
 
 import requests
@@ -24,3 +28,6 @@ class AgentScreen(Screen):   # show the agent's vitals -- along with some minima
             _ = requests.post(url=url, data={'status': led_value})
         except Exception as e:
             print(f"Are you sure the service is running on the BBB?: {e}")
+
+    def launch_worker(self):
+        pass

@@ -5,15 +5,14 @@ app = Flask(__name__)
 bbb = actuate_bbb.BBB()
 
 
+# Launch the mdagent
 @app.route("/")
 def index():
     return "Empty"
 
-
 # Change LED via post request
 @app.route("/change_led_status", methods=["POST"])
 def change_led_status():
-
     status = int(request.form['status'])
 
     if status in [0, 1]:

@@ -1,3 +1,7 @@
+"""
+Provides the login and authentication
+"""
+
 from kivy.app import App
 from kivy.uix.screenmanager import SlideTransition, Screen
 

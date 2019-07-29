@@ -1,0 +1,43 @@
+#:kivy 1.11.0
+#:import C kivy.utils.get_color_from_hex
+#:import HoverButton kvhelpers.HoverButton
+
+
+<BoxLayout>:
+    padding: 10
+    spacing: 10
+
+<GridLayout>:
+    rows: 4
+    cols: 2
+    spacing: 10
+    row_default_height: 90
+    row_force_default: True
+
+<Label>:
+    font_size: 25
+    font_name: 'assets/open-sans.ttf'
+
+<Button>:
+    font_size: 30
+    height: 90
+    size_hint: (1, None)
+    background_normal: 'assets/button_normal.png'
+    background_down: 'assets/button_down.png'
+    border: (2,2,2,2)
+
+<TextInput>
+    font_size: 25
+    multiline: False
+    padding: [10, 0.5 * (self.height - self.line_height)]
+    font_name: 'assets/open-sans.ttf'
+    cursor_blink: True
+    cursor_color: [0, 0, 0, 1]
+
+<ScrollView>:
+    canvas.before:
+        Color:
+            rgb: 1,1 ,1
+        Rectangle:
+            pos: self.pos
+            size: self.size

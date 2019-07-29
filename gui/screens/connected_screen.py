@@ -1,3 +1,8 @@
+"""
+Displays the state of the various agents alive on the network
+"""
+
+
 from kivy.clock import mainthread
 from kivy.uix.screenmanager import SlideTransition, Screen
 from kivy.uix.label import Label
@@ -18,7 +23,6 @@ class ConnectedScreen(Screen):
     stop = threading.Event()
 
     def on_enter(self):
-        print('refreshing...')
         self.reset()
 
         self.thread = threading.Thread(
@@ -40,17 +44,18 @@ class ConnectedScreen(Screen):
         status = {True: 'online', False: 'offline'}
 
         for agent_name, boolean in self.registered_agents.items():
-            if boolean:
-                print(f'Beaglebone {agent_name} is online')
-            else:
-                print(f'Beaglebone {agent_name} is offline')
-
             agent_status = status[boolean]
-            self.registered_agent_labels[agent_name] = Label(text=f'{agent_name}: {agent_status}', color=[0, 0, 0, 1], size_hint=(1, 1/num_agents))
-            self.registered_agent_buttons[agent_name] = HoverButton(text='connect',
-                                                               background_normal='assets/green.png' if boolean else 'assets/red.png',
-                                                               size_hint=(1, 1/num_agents),
-                                                               on_press=partial(self.connect_to_agent, agent_name, boolean))
+            self.registered_agent_labels[agent_name] = Label(
+                text=f'{agent_name}: {agent_status}',
+                color=[0, 0, 0, 1],
+                size_hint=(1, 1/num_agents)
+            )
+            self.registered_agent_buttons[agent_name] = HoverButton(
+                text='connect',
+                background_normal='assets/green.png' if boolean else 'assets/red.png',
+                size_hint=(1, 1/num_agents),
+               on_press=partial(self.connect_to_agent, agent_name, boolean)
+            )
 
             self.ids['bbb_grid_label'].add_widget(self.registered_agent_labels[agent_name])
             self.ids['bbb_grid_connect_button'].add_widget(self.registered_agent_buttons[agent_name])
@@ -74,6 +79,10 @@ class ConnectedScreen(Screen):
             self.manager.transition = SlideTransition(direction='down')
             self.manager.current = 'agent_screen'
             self.reset()
+
+    def launch_broker(self, *args):
+        broker_addr: str = args[0]
+        print(broker_addr)
 
     def reset(self):
         self.ids['loading_circle'].source = 'assets/loading_circle.gif'
