@@ -2,7 +2,7 @@ import os
 import glob
 
 from kivy.config import Config
-Config.set('graphics', 'resizable', '1')
+Config.set('graphics', 'resizable', '0')
 Config.set('graphics', 'width', '800')
 Config.set('graphics', 'height', '800')
 
@@ -16,7 +16,7 @@ import gui.screens as screens
 # MARK: TODOs
 # TODO: Implement a way to dynamically load a scrolling view of the BBBs (Kivy Recycleview?)
 # TODO: Implement the service to connect to the agent via ssh (naw, do so via the REST endpoints) -- fix screen as well
-# TODO: Make the application faster!
+# TODO: Make the application faster
 
 # MARK: Config and load appropriate kv file
 relevant_dirs = ('kv')

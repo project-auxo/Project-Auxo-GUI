@@ -33,6 +33,10 @@ class MouseOver(Widget):
 
 
 class HoverButton(Button, MouseOver):
+    def __init__(self, **kwargs):
+        self.border = 10, 10, 10, 10
+        super(HoverButton, self).__init__(**kwargs)
+
     def on_hover(self):
         self.opacity = 0.92
 
