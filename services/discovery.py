@@ -2,7 +2,7 @@ import os
 import platform
 import subprocess
 from typing import Dict, List, Any
-from riaps.utils.ifaces import getNetworkInterfaces
+from services.utils import get_network_interfaces
 import re
 
 
@@ -27,7 +27,7 @@ class SimpleDiscService(object):
         return self.ping_all_agents(out)
 
     def setup_interfaces(self) -> None:
-        global_IPs, global_MACs, _global_names, _local_ip = getNetworkInterfaces()
+        global_IPs, global_MACs, _global_names, _local_ip = get_network_interfaces()
 
         assert len(global_IPs) > 0, f"Error: no active network interfaces to use"
         self.ip_address = global_IPs[0]
