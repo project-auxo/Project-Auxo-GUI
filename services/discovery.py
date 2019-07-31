@@ -1,9 +1,11 @@
+import re
 import os
 import platform
 import subprocess
+import threading
 from typing import Dict, List, Any
+
 from services.utils import get_network_interfaces
-import re
 
 
 class SimpleDiscService(object):
@@ -39,17 +41,29 @@ class SimpleDiscService(object):
         :return:
         """
         agent_map: Dict[str, bool] = {}
+        threads: List[threading.Thread] = []
         for agent in agent_names:
-            agent_map[agent] = self.ping(agent)
+            t = threading.Thread(target=self.ping, args=(agent, agent_map), name=f'Ping-{agent}-Thread')
+            threads.append(t)
+            t.start()
+
+        for thread in threads:
+            thread.join()
 
         return agent_map
 
-    def ping(self, agent):
+    def ping(self, agent: str, agent_map: dict):
         param = '-n' if platform.system() == 'windows' else '-c'
         command = ['ping', param, '1', agent]
 
-        return subprocess.call(command, stdout=subprocess.DEVNULL) == 0     # DEVNULL to suppress output
+        try:
+            agent_status = subprocess.call(command, stdout=subprocess.DEVNULL, timeout=0.8) == 0     # DEVNULL to suppress output
+        except subprocess.TimeoutExpired:
+            agent_status = False
+
+        agent_map[agent] = agent_status
 
 
 if __name__ == '__main__':
     S = SimpleDiscService()
+    print(S.ping_all_agents(['bbb-df1f.local', 'bbb-0328.local', 'bbb-4444.local']))
