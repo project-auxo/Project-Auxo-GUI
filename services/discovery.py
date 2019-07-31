@@ -66,4 +66,6 @@ class SimpleDiscService(object):
 
 if __name__ == '__main__':
     S = SimpleDiscService()
+
+    # Simple test for SimpleDiscService()
     print(S.ping_all_agents(['bbb-df1f.local', 'bbb-0328.local', 'bbb-4444.local']))

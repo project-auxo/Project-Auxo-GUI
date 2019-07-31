@@ -16,7 +16,7 @@ import gui.screens as screens
 # MARK: TODOs
 # TODO: Implement a way to dynamically load a scrolling view of the BBBs (Kivy Recycleview?)
 # TODO: Implement the service to connect to the agent via ssh (naw, do so via the REST endpoints) -- fix screen as well
-
+# TODO: Make the application faster!
 
 # MARK: Config and load appropriate kv file
 relevant_dirs = ('kv')

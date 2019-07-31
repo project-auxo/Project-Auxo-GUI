@@ -1,0 +1,1 @@
+# ![Logo](gui/assets/Auxo_Logo_Black.png) Project Auxo
