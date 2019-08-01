@@ -3,9 +3,9 @@ Displays the state of the various agents alive on the network
 """
 
 
+from kivy.uix.label import Label
 from kivy.clock import mainthread
 from kivy.uix.screenmanager import SlideTransition, Screen
-from kivy.uix.label import Label
 
 from gui.kvhelpers import HoverButton
 
@@ -21,6 +21,9 @@ class ConnectedScreen(Screen):
     thread = None
 
     stop = threading.Event()
+
+    def __init__(self, **kwargs):
+        super(ConnectedScreen, self).__init__(**kwargs)
 
     def on_enter(self):
         self.reset()
@@ -47,13 +50,14 @@ class ConnectedScreen(Screen):
             agent_status = status[boolean]
             self.registered_agent_labels[agent_name] = Label(
                 text=f'{agent_name}: {agent_status}',
+                halign='left',
                 color=[0, 0, 0, 1],
-                size_hint=(1, 1/num_agents)
+                size_hint=(1, 1/3)
             )
             self.registered_agent_buttons[agent_name] = HoverButton(
                 text='connect',
                 background_normal='assets/green.png' if boolean else 'assets/red.png',
-                size_hint=(1, 1/num_agents),
+                size_hint=(1, 1/3),
                on_press=partial(self.connect_to_agent, agent_name, boolean)
             )
 
@@ -62,7 +66,7 @@ class ConnectedScreen(Screen):
 
     @mainthread
     def do_logout(self):
-        self.manager.transition = SlideTransition(direction='down')
+        self.manager.transition = SlideTransition(direction='right')
         self.manager.current = 'login_screen'
         self.reset()
         self.stop.set()
@@ -76,13 +80,16 @@ class ConnectedScreen(Screen):
             agent_screen = self.manager.get_screen('agent_screen')
             setattr(agent_screen, 'selected_agent_name', selected_agent_name)
 
-            self.manager.transition = SlideTransition(direction='down')
+            self.manager.transition = SlideTransition(direction='right')
             self.manager.current = 'agent_screen'
             self.reset()
 
     def launch_broker(self, *args):
         broker_addr: str = args[0]
+
         print(broker_addr)
+
+        self.ids['broker_addr_input'].text = ''
 
     def reset(self):
         self.ids['loading_circle'].source = 'assets/loading_circle.gif'

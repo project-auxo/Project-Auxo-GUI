@@ -15,7 +15,7 @@ selected_agent = None
 class AgentScreen(Screen):   # show the agent's vitals -- along with some minimal control
 
     def go_back(self):
-        self.manager.transition = SlideTransition(direction='down')
+        self.manager.transition = SlideTransition(direction='right')
         self.manager.current = 'connected_screen'
 
     def toggle_led(self):

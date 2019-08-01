@@ -1,40 +1,79 @@
 #:kivy 1.11.0
 #:import C kivy.utils.get_color_from_hex
 #:import HoverButton kvhelpers.HoverButton
+#:import Toast kvhelpers.Toast
+
+
+<Background@BoxLayout>:
+    orientation: 'vertical'
+
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            source: "assets/white.png"
+
+
+<AuxoInput@TextInput>:
+    halign: 'center'
+    size_hint: (0.5, 1/12)
+    background_normal: 'assets/textinput.png'
+    background_active: 'assets/input_line.png'
+
+
+<AuxoLogo@FloatLayout>:
+    canvas.before:
+        Color:
+            rgb: 0, 0, 0  # Project Auxo Black
+        SmoothLine:
+            width: 2
+            ellipse: (root.width/2 - 158/2, self.height/2 - 158/2 + 150*1.5, 158, 158, 0, 360)
+
+    canvas:
+        Color:
+            rgb: 1, 1, 1
+        Ellipse:
+            id: root_picture
+            pos: root.width/2 - 150/2, self.height/2 - 150/2 + 150*1.5
+            size: 150, 150
+            source: 'assets/Auxo_Logo_Black.png'
+            angle_start: 0
+            angle_end: 360
+
+
+<Toast@AnchorLayout>:
+    size_hint: None, None
+    y: '-50dp'
+    size: '300dp', '48dp'
+    anchor_x: 'right'
+    canvas:
+        Color:
+            rgba: 0.91, 0.298, 0.239, 1.0
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        id: label
+        font_size: '18sp'
+
+    AnchorLayout:
+        size_hint: None, None
+        size: '48dp', '48dp'
+        anchor_x: 'center'
+        HoverButton:
+            size_hint: None, None
+            size: '24dp', '24dp'
+            border: 0, 0, 0, 0
+            background_normal: 'assets/close.png'
+            background_down: 'assets/close_down.png'
+            on_release: root.exit(None)
 
 
 <LoginScreen>:
-    BoxLayout:
-        orientation: 'vertical'
-
-        canvas.before:
-            Color:
-                rgba: 1, 1, 1, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-                source: "assets/white.png"
-
-
-        FloatLayout:
-
-            canvas.before:
-                Color:
-                    rgb: 0, 0, 0  # Project Auxo Black
-                SmoothLine:
-                    width: 2
-                    ellipse: (root.width/2 - 158/2, self.height/2 - 158/2 + 150*1.5, 158, 158, 0, 360)
-
-            canvas:
-                Color:
-                    rgb: 1, 1, 1
-                Ellipse:
-                    id: root_picture
-                    pos: root.width/2 - 150/2, self.height/2 - 150/2 + 150*1.5
-                    size: 150, 150
-                    source: 'assets/Auxo_Logo_Black.png'
-                    angle_start: 0
-                    angle_end: 360
+    Background:
+        AuxoLogo:
 
             Label:
                 text: 'Project Auxo v1.0'
@@ -42,27 +81,18 @@
                 font_size: 15
                 size_hint: (1, 0.3)
 
-            TextInput:
+            AuxoInput:
                 id: username
                 hint_text: "username"
-                halign: 'center'
-
-                size_hint: (0.5, 1/12)
                 pos_hint: {'center_x': 0.5, 'y': 0.47}
-                background_normal: 'assets/input_line.png'
-                background_active: 'assets/input_line.png'
+
                 on_text_validate: password.focus = True
 
-            TextInput:
+            AuxoInput:
                 id: password
                 hint_text: "password"
                 password: True
-                halign: 'center'
-
-                size_hint: (0.5, 1/12)
                 pos_hint: {'center_x': 0.5, 'y': 0.37}
-                background_normal: 'assets/input_line.png'
-                background_active: 'assets/input_line.png'
 
                 on_text_validate: root.do_login(username.text, password.text)
 
@@ -79,3 +109,8 @@
 
                 size_hint: (0.5, 0.1)
                 pos_hint: {'center_x': 0.5, 'y': 0.20}
+
+            Toast:
+                id: toast
+                width: min(root.width - dp(32), dp(300))
+                x: root.center_x - self.width // 2

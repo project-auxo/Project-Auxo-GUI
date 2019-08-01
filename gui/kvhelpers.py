@@ -1,8 +1,12 @@
-from kivy.core.window import Window
-from kivy.properties import StringProperty, DictProperty, BooleanProperty, ObjectProperty
-from kivy.uix.widget import Widget
-from kivy.uix.button import Button
+from kivy.clock import Clock
+import kivy.metrics as metrics
 from kivy.factory import Factory
+from kivy.uix.button import Button
+from kivy.uix.widget import Widget
+from kivy.core.window import Window
+from kivy.animation import Animation
+from kivy.uix.anchorlayout import AnchorLayout
+from kivy.properties import StringProperty, DictProperty, BooleanProperty, ObjectProperty
 
 
 # MARK: Extra Functionality
@@ -38,6 +42,27 @@ class HoverButton(Button, MouseOver):
 
     def on_exit(self):
         self.opacity = 1.0
+
+
+class Toast(AnchorLayout):
+    text = StringProperty("Oops! Error")
+
+    def __init__(self, **kwargs):
+        super(Toast, self).__init__(**kwargs)
+
+    def show(self, desc):
+        self.text = desc
+        anim = Animation(y = metrics.dp(50), t = 'in_out_expo')
+        anim.start(self)
+        Clock.schedule_once(self.exit, 2)
+
+    def exit(self, dt):
+        Clock.unschedule(self.exit)
+        anim = Animation(y = metrics.dp(-50), t = 'in_out_expo')
+        anim.start(self)
+
+    def on_text(self, instance, value):
+        self.ids.label.text = value
 
 
 Factory.register('MouseOver', MouseOver)
