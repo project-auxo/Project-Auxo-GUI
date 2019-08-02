@@ -50,15 +50,15 @@ class Toast(AnchorLayout):
     def __init__(self, **kwargs):
         super(Toast, self).__init__(**kwargs)
 
-    def show(self, desc):
+    def show(self, desc, expiry_time: int = 2):
         self.text = desc
-        anim = Animation(y = metrics.dp(50), t = 'in_out_expo')
+        anim = Animation(y=metrics.dp(50), t='in_out_expo')
         anim.start(self)
-        Clock.schedule_once(self.exit, 2)
+        Clock.schedule_once(self.exit, expiry_time)
 
     def exit(self, dt):
         Clock.unschedule(self.exit)
-        anim = Animation(y = metrics.dp(-50), t = 'in_out_expo')
+        anim = Animation(y=metrics.dp(-50), t='in_out_expo')
         anim.start(self)
 
     def on_text(self, instance, value):
@@ -66,3 +66,5 @@ class Toast(AnchorLayout):
 
 
 Factory.register('MouseOver', MouseOver)
+Factory.register('Toast', Toast)
+

@@ -27,7 +27,7 @@ for kv_file in glob.glob(os.path.join(dirname, "*.kv"), recursive=True):
 
 class ProjectAuxoApp(App):
     icon = 'assets/Auxo_Logo_Black.png'
-    title = 'Project Auxo Platform'
+    title = 'Auxo Olympus'
 
     username = StringProperty("")
     password = StringProperty("")

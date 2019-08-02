@@ -5,12 +5,16 @@ Displays the state of the various agents alive on the network
 
 from kivy.uix.label import Label
 from kivy.clock import mainthread
+from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import SlideTransition, Screen
 
 from gui.kvhelpers import HoverButton
 
+from zmq.error import ZMQError
 import threading
 from functools import partial
+
+from auxo_olympus.lib.mdbroker import MajorDomoBroker
 from services.discovery import SimpleDiscService
 
 
@@ -23,7 +27,11 @@ class ConnectedScreen(Screen):
     stop = threading.Event()
 
     def __init__(self, **kwargs):
+        self.broker_thread = None
         super(ConnectedScreen, self).__init__(**kwargs)
+
+    def _show_toast(self, text):
+        self.ids['toast'].show(text, expiry_time=2)
 
     def on_enter(self):
         self.reset()
@@ -80,14 +88,24 @@ class ConnectedScreen(Screen):
             agent_screen = self.manager.get_screen('agent_screen')
             setattr(agent_screen, 'selected_agent_name', selected_agent_name)
 
-            self.manager.transition = SlideTransition(direction='right')
+            self.manager.transition = SlideTransition(direction='left')
             self.manager.current = 'agent_screen'
             self.reset()
 
     def launch_broker(self, *args):
         broker_addr: str = args[0]
 
-        print(broker_addr)
+        self.broker_thread = MajorDomoBroker(verbose=True)
+        try:
+            self.broker_thread.bind(f"tcp://{broker_addr}")
+            self.broker_thread.start()
+        except ZMQError as e:
+            self._show_toast(repr(e))
+        finally:
+            self.broker_thread.shutdown_flag.set()
+            if self.broker_thread.is_alive():
+                self.broker_thread.join()
+            self.broker_thread = None
 
         self.ids['broker_addr_input'].text = ''
 
@@ -101,3 +119,8 @@ class ConnectedScreen(Screen):
             self.ids['bbb_grid_connect_button'].remove_widget(self.registered_agent_buttons[agent_name])
 
         self.registered_agents.clear()
+
+        if self.broker_thread:
+            self.broker_thread.shutdown_flag.set()
+            self.broker_thread.join()
+            self.broker_thread = None

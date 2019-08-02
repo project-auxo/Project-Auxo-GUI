@@ -57,7 +57,7 @@ class SimpleDiscService(object):
         command = ['ping', param, '1', agent]
 
         try:
-            agent_status = subprocess.call(command, stdout=subprocess.DEVNULL, timeout=0.8) == 0     # DEVNULL to suppress output
+            agent_status = subprocess.call(command, stdout=subprocess.DEVNULL, timeout=0.5) == 0     # DEVNULL to suppress output
         except subprocess.TimeoutExpired:
             agent_status = False
 

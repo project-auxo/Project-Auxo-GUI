@@ -11,7 +11,7 @@ class LoginScreen(Screen):
         super(LoginScreen, self).__init__(**kwargs)
 
     def _show_toast(self, text):
-        self.ids['toast'].show(text)
+        self.ids['toast'].show(text, expiry_time=1)
 
     def on_enter(self):
         self.ids['username'].focus = True   # so the user can begin typing right away

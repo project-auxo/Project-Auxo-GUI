@@ -1,6 +1,35 @@
 #:kivy 1.11.0
 #:import C kivy.utils.get_color_from_hex
 #:import HoverButton kvhelpers.HoverButton
+#:import Toast kvhelpers.Toast
+
+
+<Toast@AnchorLayout>:
+    size_hint: None, None
+    y: '-50dp'
+    size: '300dp', '48dp'
+    anchor_x: 'right'
+    canvas:
+        Color:
+            rgba: 0.91, 0.298, 0.239, 1.0
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        id: label
+        font_size: '18sp'
+
+    AnchorLayout:
+        size_hint: None, None
+        size: '48dp', '48dp'
+        anchor_x: 'center'
+        HoverButton:
+            size_hint: None, None
+            size: '24dp', '24dp'
+            border: 0, 0, 0, 0
+            background_normal: 'assets/close.png'
+            background_down: 'assets/close_down.png'
+            on_release: root.exit(None)
 
 
 <ConnectedScreen>:
@@ -87,5 +116,10 @@
                 text: "logout"
                 on_press: root.do_logout()
                 background_normal: 'assets/black.png'
+
+    Toast:
+        id: toast
+        width: dp(500)
+        x: root.center_x - self.width // 2
 
 
