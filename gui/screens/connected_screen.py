@@ -1,11 +1,9 @@
 """
 Displays the state of the various agents alive on the network
 """
-
-
 from kivy.uix.label import Label
 from kivy.clock import mainthread
-from kivy.uix.popup import Popup
+from kivy.properties import StringProperty
 from kivy.uix.screenmanager import SlideTransition, Screen
 
 from gui.kvhelpers import HoverButton
@@ -22,6 +20,7 @@ class ConnectedScreen(Screen):
     registered_agents = {}
     registered_agent_buttons = {}
     registered_agent_labels = {}
+    broker_addr = StringProperty("")
     thread = None
 
     stop = threading.Event()
@@ -93,23 +92,22 @@ class ConnectedScreen(Screen):
             self.reset()
 
     def launch_broker(self, *args):
-        broker_addr: str = args[0]
+        self.broker_addr: str = args[0]
 
         self.broker_thread = MajorDomoBroker(verbose=True)
         try:
-            self.broker_thread.bind(f"tcp://{broker_addr}")
+            self.broker_thread.bind(f"tcp://{self.broker_addr}")
             self.broker_thread.start()
         except ZMQError as e:
             self._show_toast(repr(e))
-        finally:
+
             self.broker_thread.shutdown_flag.set()
             if self.broker_thread.is_alive():
-                self.broker_thread.join()
+                self.broker_thread.join(0.0)
             self.broker_thread = None
 
-        self.ids['broker_addr_input'].text = ''
-
     def reset(self):
+        self.ids['broker_addr_input'].text = ''
         self.ids['loading_circle'].source = 'assets/loading_circle.gif'
         self.ids['loading_circle'].anim_delay = 1/20
 
@@ -122,5 +120,5 @@ class ConnectedScreen(Screen):
 
         if self.broker_thread:
             self.broker_thread.shutdown_flag.set()
-            self.broker_thread.join()
+            self.broker_thread.join(0.0)
             self.broker_thread = None

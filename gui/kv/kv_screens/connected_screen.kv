@@ -2,6 +2,7 @@
 #:import C kivy.utils.get_color_from_hex
 #:import HoverButton kvhelpers.HoverButton
 #:import Toast kvhelpers.Toast
+#:import Factory kivy.factory.Factory
 
 
 <Toast@AnchorLayout>:
@@ -53,11 +54,15 @@
                 bold: True
                 markup: True
 
+            Label:
+                size_hint_x: 1/5
+                id: broker_status_image
+                text: 'broker at: '
+
             Image:
                 id: loading_circle
                 source: 'assets/loading_circle.gif'
                 anim_delay: 1/20
-
 
 
         # Row 2
