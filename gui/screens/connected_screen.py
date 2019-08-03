@@ -98,6 +98,8 @@ class ConnectedScreen(Screen):
         try:
             self.broker_thread.bind(f"tcp://{self.broker_addr}")
             self.broker_thread.start()
+
+            self.ids['broker_status_label'].text = f"broker at: {self.broker_addr}"
         except ZMQError as e:
             self._show_toast(repr(e))
 
@@ -122,3 +124,5 @@ class ConnectedScreen(Screen):
             self.broker_thread.shutdown_flag.set()
             self.broker_thread.join(0.0)
             self.broker_thread = None
+
+            self.ids['broker_status_label'].text = f"broker at: "
