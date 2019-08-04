@@ -12,7 +12,7 @@
     anchor_x: 'right'
     canvas:
         Color:
-            rgba: 0.91, 0.298, 0.239, 1.0
+            rgba: self.rgba     # 0.91, 0.298, 0.239, 1.0       # defines red
         Rectangle:
             pos: self.pos
             size: self.size
@@ -54,12 +54,6 @@
                 bold: True
                 markup: True
 
-            Label:
-                size_hint_x: 1/5
-                id: broker_status_label
-                text: 'broker at: '
-                color: 0, 0, 0, 1
-
             Image:
                 id: loading_circle
                 source: 'assets/loading_circle.gif'
@@ -75,15 +69,29 @@
                 id: broker_addr_input
                 hint_text: "broker ip:port"
                 halign: 'center'
+                size_hint_x: 1/2
+
 
                 background_normal: 'assets/textinput.png'
                 background_active: 'assets/input_line.png'
 
             HoverButton:
+                size_hint_x: 1/6
                 text: 'launch'
                 on_press: root.launch_broker(broker_addr_input.text)
                 background_normal: 'assets/black.png'
 
+            HoverButton:
+                size_hint_x: 1/6
+                text: 'see'
+                on_press: root.switch_to_broker()
+                background_normal: 'assets/black.png'
+
+            HoverButton:
+                size_hint_x: 1/6
+                text: 'quit'
+                on_press: root.quit_broker()
+                background_normal: 'assets/red.png'
 
         # Row 3
         BoxLayout:

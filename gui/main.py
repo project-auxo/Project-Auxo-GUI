@@ -17,6 +17,7 @@ import gui.screens as screens
 # TODO: Implement a way to dynamically load a scrolling view of the BBBs (Kivy Recycleview?)
 # TODO: Implement the service to connect to the agent via ssh (naw, do so via the REST endpoints) -- fix screen as well
 # TODO: Make the application faster!
+# TODO: Figure out a way to get the toast banner to change color
 
 # MARK: Config and load appropriate kv file
 relevant_dirs = ('kv')
@@ -41,6 +42,7 @@ class ProjectAuxoApp(App):
         manager.add_widget(screens.login_screen.LoginScreen(name='login_screen'))
         manager.add_widget(screens.connected_screen.ConnectedScreen(name='connected_screen'))
         manager.add_widget(screens.agent_screen.AgentScreen(name='agent_screen'))
+        manager.add_widget(screens.broker_screen.BrokerScreen(name='broker_screen'))
 
         return manager
 

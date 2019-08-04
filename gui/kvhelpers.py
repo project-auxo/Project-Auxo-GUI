@@ -1,12 +1,13 @@
 from kivy.clock import Clock
 import kivy.metrics as metrics
+from kivy.graphics import Color
 from kivy.factory import Factory
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
 from kivy.animation import Animation
 from kivy.uix.anchorlayout import AnchorLayout
-from kivy.properties import StringProperty, DictProperty, BooleanProperty, ObjectProperty
+from kivy.properties import StringProperty, ListProperty, BooleanProperty, ObjectProperty
 
 
 # MARK: Extra Functionality
@@ -46,6 +47,7 @@ class HoverButton(Button, MouseOver):
 
 class Toast(AnchorLayout):
     text = StringProperty("Oops! Error")
+    rgba = ListProperty([0.247, 0.890, 0.149])
 
     def __init__(self, **kwargs):
         super(Toast, self).__init__(**kwargs)
@@ -63,6 +65,11 @@ class Toast(AnchorLayout):
 
     def on_text(self, instance, value):
         self.ids.label.text = value
+
+    def change_color(self, color):
+        self.rgba = color
+        with self.canvas:
+            Color(*color)
 
 
 Factory.register('MouseOver', MouseOver)
