@@ -12,7 +12,7 @@ from zmq.error import ZMQError
 import threading
 from functools import partial
 
-from auxo_olympus.lib.mdbroker import MajorDomoBroker
+from auxo_olympus.lib.entities.mdbroker import MajorDomoBroker
 from services.discovery import SimpleDiscService
 
 
